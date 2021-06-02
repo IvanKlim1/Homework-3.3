@@ -1,4 +1,0 @@
-D:\Kotlin\Homework 3.3\src\main\kotlin\ru\netology\main.kt
-D:\Kotlin\Homework 3.3\src\main\kotlin\ru\netology\ChatService.kt
-D:\Kotlin\Homework 3.3\src\main\kotlin\ru\netology\Message.kt
-D:\Kotlin\Homework 3.3\src\main\kotlin\ru\netology\Chat.kt

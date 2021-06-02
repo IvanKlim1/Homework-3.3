@@ -41,7 +41,7 @@ class ChatService {
     }
 
     fun addChat(userId: Int, chat: Chat): Chat {
-        if (chat.message.messageId == 0) {
+        if (chat.message.messageId == 1) {
             chats += chat
         }
         return chats.last()
@@ -59,7 +59,7 @@ class ChatService {
     }
 
     fun getUnreadChatsCount(userId: Int,incomingOrOutgoingMessage:Boolean, countUnReadMessage: Int, chat: Chat): Int {
-        if (incomingOrOutgoingMessage==true && chat.unReadMessage in chats > 0) {
+        if (incomingOrOutgoingMessage==true && chat.unReadMessage > 0) {
             countUnReadMessage + 1
         }
         return countUnReadMessage
