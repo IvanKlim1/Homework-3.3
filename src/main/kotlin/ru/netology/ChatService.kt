@@ -10,13 +10,17 @@ class ChatService {
         if (incomingOrOutgoingMessage == true) {
             inComingMessages += message.copy(
                 messageId = if (inComingMessages.isEmpty()) 1
-                else inComingMessages.last().messageId + 1
+                else inComingMessages.last().count + 1,
+                count= if (inComingMessages.isEmpty()) 1
+                else inComingMessages.last().count + 1
             )
             return inComingMessages.last()
         } else {
             outGoingMessages += message.copy(
                 messageId = if (outGoingMessages.isEmpty()) 1
-                else outGoingMessages.last().messageId + 1
+                else outGoingMessages.last().messageId + 1,
+                count = if (outGoingMessages.isEmpty()) 1
+                else outGoingMessages.last().count + 1
             )
             return outGoingMessages.last()
         }
@@ -42,7 +46,10 @@ class ChatService {
 
     fun addChat(userId: Int, chat: Chat): Chat {
         if (chat.message.messageId == 1) {
-            chats += chat
+            chats += chat.copy(
+                chatId = if (chats.isEmpty()) 1
+                else chats.last().chatId + 1
+            )
         }
         return chats.last()
     }
@@ -59,7 +66,7 @@ class ChatService {
     }
 
     fun getUnreadChatsCount(userId: Int,incomingOrOutgoingMessage:Boolean, countUnReadMessage: Int, chat: Chat): Int {
-        if (incomingOrOutgoingMessage==true && chat.unReadMessage > 0) {
+        if (incomingOrOutgoingMessage && chat.unReadMessage > 0) {
             countUnReadMessage + 1
         }
         return countUnReadMessage
@@ -70,9 +77,12 @@ class ChatService {
         return chats.filter { it.unReadMessage > 0 }
     }
 
-    fun getMessages(chatId: Int, count: Int) {
-        inComingMessages
-        outGoingMessages
+    fun getMessagesInComingMessages(chatId: Int):List<Message> {
+        return inComingMessages.filter { it.count > 0 }
+
+    }
+    fun getMessagesOutGoingMessages(chatId: Int):List<Message> {
+        return outGoingMessages.filter { it.count > 0 }
     }
 
 

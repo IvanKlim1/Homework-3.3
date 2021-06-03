@@ -6,6 +6,6 @@ data class Message(
     val text: String,
     val date: Int,
     val sizes: Int,
-    val count:Int,
+    var count:Int,
     val incomingOrOutgoingMessage:Boolean // если true то сообщение входящее
 )
