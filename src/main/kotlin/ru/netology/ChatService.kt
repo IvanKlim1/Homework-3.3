@@ -2,29 +2,28 @@ package ru.netology
 
 
 class ChatService {
-    var chats = emptyArray<Chat>()
+    private var chats = emptyArray<Chat>()
     private var inComingMessages = emptyArray<Message>()
     private var outGoingMessages = emptyArray<Message>()
 
-    fun addMessage(userId: Int,incomingOrOutgoingMessage:Boolean, message: Message): Message {
-        if (incomingOrOutgoingMessage == true) {
-            inComingMessages += message.copy(
-                messageId = if (inComingMessages.isEmpty()) 1
-                else inComingMessages.last().count + 1,
-                count= if (inComingMessages.isEmpty()) 1
-                else inComingMessages.last().count + 1
-            )
-            return inComingMessages.last()
+    fun Array<Message>.getCount(): Int =
+        if (isEmpty()) 1 else last().count + 1
+    fun Array<Message>.getLastId(): Int =
+        if (isEmpty()) 1 else last().messageId + 1
+    private fun copyMessage(target: Array<Message>, message: Message): Message =
+        message.copy(
+            messageId = target.getLastId(),
+            count = target.getCount()
+        )
+
+    fun addMessage(userId: Int,incomingOrOutgoingMessage:Boolean, message: Message): Message =
+        if (incomingOrOutgoingMessage) {
+            inComingMessages += copyMessage(inComingMessages, message)
+            inComingMessages.last()
         } else {
-            outGoingMessages += message.copy(
-                messageId = if (outGoingMessages.isEmpty()) 1
-                else outGoingMessages.last().messageId + 1,
-                count = if (outGoingMessages.isEmpty()) 1
-                else outGoingMessages.last().count + 1
-            )
-            return outGoingMessages.last()
+            outGoingMessages +=copyMessage(outGoingMessages, message)
+            outGoingMessages.last()
         }
-    }
 
     fun deleteMessage(userId: Int, message: Message): List<Message> {
         for ((index, deleteMessage) in outGoingMessages.withIndex()) {
@@ -43,13 +42,16 @@ class ChatService {
         }
         outGoingMessages + message.copy(messageId = outGoingMessages.lastOrNull()?.messageId ?: 0)
     }
-
+    fun Array<Chat>.getChatId(): Int =
+        if (isEmpty()) 1 else last().chatId + 1
+    private fun copyChat(target: Array<Chat>, chat: Chat): Chat =
+        chat.copy(
+            chatId = target.getChatId(),
+        )
     fun addChat(userId: Int, chat: Chat): Chat {
         if (chat.message.messageId == 1) {
-            chats += chat.copy(
-                chatId = if (chats.isEmpty()) 1
-                else chats.last().chatId + 1
-            )
+            chats +=copyChat(chats,chat)
+                
         }
         return chats.last()
     }
@@ -65,7 +67,7 @@ class ChatService {
         throw MessageNotFoundException("error")
     }
 
-    fun getUnreadChatsCount(userId: Int,incomingOrOutgoingMessage:Boolean, countUnReadMessage: Int, chat: Chat): Int {
+    fun getUnreadChatsCount(userId: Int, incomingOrOutgoingMessage: Boolean, countUnReadMessage: Int, chat: Chat): Int {
         if (incomingOrOutgoingMessage && chat.unReadMessage > 0) {
             countUnReadMessage + 1
         }
@@ -77,11 +79,12 @@ class ChatService {
         return chats.filter { it.unReadMessage > 0 }
     }
 
-    fun getMessagesInComingMessages(chatId: Int):List<Message> {
+    fun getMessagesInComingMessages(chatId: Int): List<Message> {
         return inComingMessages.filter { it.count > 0 }
 
     }
-    fun getMessagesOutGoingMessages(chatId: Int):List<Message> {
+
+    fun getMessagesOutGoingMessages(chatId: Int): List<Message> {
         return outGoingMessages.filter { it.count > 0 }
     }
 
